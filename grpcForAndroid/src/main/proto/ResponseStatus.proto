@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package com.changhongit.ditoo.app.grpc.common.response.status;
+
+option java_multiple_files = true;
+option java_package = "com.changhongit.ditoo.app.grpc.common.response.status";
+
+message ResponseStatus{
+	int32 code = 1;
+    string message = 2;
+}
