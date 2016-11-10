@@ -1,15 +1,14 @@
+﻿apply plugin: 'idea'
+apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
-apply plugin: 'java'
 apply plugin: 'com.google.protobuf'
-
-signing {
-    sign configurations.archives
-}
 
 group = "io.github.conanchen"
 archivesBaseName = "ditto-app-android-grpcapi"
 version = "1.0.0"
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 uploadArchives {
     repositories {
@@ -62,22 +61,7 @@ tasks.withType(JavaCompile){
 dependencies {
     compile 'io.grpc:grpc-all:1.0.0'
 }
-task clearJar(type: Delete) {
-    delete 'libs/CH_GRPC_SDK.jar'
-}
-task makeJar(type:Jar,dependsOn:[clearJar, build]) {
-    //指定生成的jar名
-    baseName 'CH_GRPC_SDK'
-    //从哪里打包class文件
-    from('build/intermediates/classes/release')
-    //打包到jar后的目录结构
-    //into('')
-    //去掉不需要打包的目录和文件
-    exclude('android/')
-    //exclude('BuildConfig.class', 'R.class')
-    //去掉R$开头的文件
-    //exclude{ it.name.startsWith('R$');}
-}
+
 protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.0.0"
@@ -92,4 +76,26 @@ protobuf {
             grpc {}
         }
     }
+}
+
+//参见Part 2， 为项目生成**.jar/**-javadoc.jar/**-sources.jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+//为所有的jar包做数字签名
+signing {
+    sign configurations.archives
 }
