@@ -1,0 +1,1 @@
+include ':app', ':grpc-for-android-client', ':grpc-for-java-client'

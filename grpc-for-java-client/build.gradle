@@ -1,0 +1,108 @@
+apply plugin: 'java'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.google.protobuf'
+
+group = "io.github.conanchen"
+archivesBaseName = "grpc-for-java-client"
+version = "1.0.0"//发布的library的版本号
+
+def siteUrl = 'https://github.com/conanchen/ditto-app-android-grpcapi'
+def gitUrl = 'https://github.com/conanchen/ditto-app-android-grpcapi.git'
+def issueUrl = 'https://github.com/conanchen/ditto-app-android-grpcapi/issues'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        userOrg = "kkchen"
+        repo = "ditto-grpcapi-android"
+        name = "grpc-api-andorid"    //发布到JCenter上的项目名字，必须填写
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        issueTrackerUrl = issueUrl
+        licenses = ["MIT", "Apache-2.0"]
+        publish = true
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+
+                // Add your description here
+                name = 'A simple Java implmentation of The Blue Allinace APIv2'
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'http://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'phil-lopreiato'
+                        name 'Phil Lopreiato'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    compile 'io.grpc:grpc-all:1.0.0'
+    testCompile 'junit:junit:4.12'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.0.0"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.0.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+}
+task sourcesJar(type: Jar) {
+    from 'src/main'
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+apply plugin: 'com.github.kt3k.coveralls'
+

@@ -1,0 +1,154 @@
+syntax = "proto3";
+
+package org.ditto.cpoe.app.grpc.user;
+
+import "ResponseStatus.proto";
+import "Headers.proto";
+
+option java_multiple_files = true;
+option java_package = "org.ditto.cpoe.app.grpc.user";
+option java_outer_classname = "UserProto";
+
+//service definition.
+service UserService
+{	
+	rpc getVerificationCode(CommandGetVerificationCode) returns (CommandGetVerificationCodeResponse){}
+	rpc register(CommandRegister) returns (CommandRegisterResponse){}
+	rpc login(CommandLogin) returns (CommandLoginResponse){}
+	rpc updatePassword(CommandUpdatePassword) returns (CommandUpdatePasswordResponse){}
+	rpc resetPassword(CommandResetPassword) returns (CommandResetPasswordResponse){}
+	rpc loginOut(CommandLoginOut) returns(CommandLoginOutResponse){}
+	
+	//QR Code Relation method
+	rpc validateLoginQRCode(CommandValidateQRCode) returns(CommandValidateQRCodeResponse){}
+	rpc qRCodeLogin(QRCodeLogin) returns(QRCodeLoginResponse){}	
+}
+//message definition
+message CommandGetVerificationCode
+{
+    string telNum = 1;
+}
+message CommandGetVerificationCodeResponse
+{
+    org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+    CommandGetVerificationCodeResponseBody responseBody = 2;
+}
+message CommandGetVerificationCodeResponseBody
+{
+    string verificationCode = 1;
+}
+
+message CommandRegister
+{
+    string userName = 1;
+    string password = 2;
+    string verificationCode = 3;
+}
+message CommandRegisterResponse
+{
+    org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+    //responseBody?
+}
+message CommandLogin
+{
+    string userName = 1;
+    string password = 2;
+    string clientId = 3;
+    string clientSecret = 4;
+}
+message CommandLoginResponse
+{
+    org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+    CommandLoginResponseBody responseBody = 2;
+}
+message CommandLoginResponseBody{
+    string uuid = 1;
+	string loginName = 2;
+    string accessToken = 3;
+  	string refreshToken = 4;
+  	string expiresIn = 5;
+  	string clientId = 6;
+}
+
+message CommandUpdatePassword
+{
+    org.ditto.cpoe.app.grpc.common.request.headers.Headers header = 1;
+    CommandUpdatePasswordRequestBody requestBody = 2;
+}
+message CommandUpdatePasswordRequestBody
+{
+    string userName = 1;
+    string oldPassword = 2;
+    string newPassword = 3;
+}
+message CommandUpdatePasswordResponse
+{
+    org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+    //responseBody?  
+}
+message CommandResetPassword
+{
+    org.ditto.cpoe.app.grpc.common.request.headers.Headers header = 1;
+    CommandResetPasswordRequestBody requestBody = 2;
+}
+message CommandResetPasswordRequestBody
+{
+    string userName = 1;
+    string password = 2;
+    string verificationCode = 3;
+}
+message CommandResetPasswordResponse
+{
+    org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+    //responseBody?
+}
+
+message CommandLoginOut {
+  org.ditto.cpoe.app.grpc.common.request.headers.Headers header = 1;
+}
+message CommandLoginOutResponse
+{
+    org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+}
+
+//Validate LoginQRCode
+message CommandValidateQRCode
+{
+    org.ditto.cpoe.app.grpc.common.request.headers.Headers header = 1;
+    CommandValidateQRCodeRequestBody requestBody = 2;
+}
+message CommandValidateQRCodeRequestBody
+{
+    string qRCode = 1;
+}
+message CommandValidateQRCodeResponse
+{
+    org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+    CommandValidateQRCodeResponseBody responseBody = 2;
+}
+message CommandValidateQRCodeResponseBody{
+	
+}
+
+//qRCodeLogin
+message QRCodeLogin
+{
+    org.ditto.cpoe.app.grpc.common.request.headers.Headers header = 1;
+    QRCodeLoginRequestBody requestBody = 2;
+}
+message QRCodeLoginRequestBody{
+	string qRCode = 1;
+	string uuid = 2;
+	string loginName = 3;
+    string accessToken = 4;
+  	string refreshToken = 5;
+  	string expiresIn = 6;
+  	string clientId = 7;
+}
+message QRCodeLoginResponse{
+	org.ditto.cpoe.app.grpc.common.response.status.ResponseStatus status = 1;
+    QRCodeLoginResponseBody responseBody = 2;
+}
+message QRCodeLoginResponseBody{
+	
+}
