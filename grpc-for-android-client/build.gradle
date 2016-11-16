@@ -26,12 +26,7 @@ android {
         abortOnError false
     }
 }
-
-version = "1.0.0"//发布的library的版本号
-def siteUrl = 'https://github.com/conanchen/ditto-app-android-grpcapi'      // 项目的主页   这个是说明，可随便填
-def gitUrl = 'https://github.com/conanchen/ditto-app-android-grpcapi'      // Git仓库的url  这个是说明，可随便填
-group = "io.github.conanchen"    // 这里是groupId ,必须填写  一般填你唯一的包名
-
+//
 protobuf {
     protoc {
         artifact = 'com.google.protobuf:protoc:3.0.0'
@@ -65,12 +60,20 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:3.0.0'
     compile 'com.google.guava:guava:18.0'
     compile 'com.squareup.okhttp:okhttp:2.2.0'
+
+    // You need to build grpc-java to obtain these libraries below.
     compile 'io.grpc:grpc-okhttp:1.0.0' // CURRENT_GRPC_VERSION
     compile 'io.grpc:grpc-protobuf-lite:1.0.0' // CURRENT_GRPC_VERSION
     compile 'io.grpc:grpc-stub:1.0.0' // CURRENT_GRPC_VERSION
     compile 'javax.annotation:javax.annotation-api:1.2'
 }
 
+//important 自动生成pom.xml文件
+version = "1.0.0"//发布的library的版本号
+
+def siteUrl = 'https://github.com/conanchen/ditto-app-android-grpcapi'      // 项目的主页   这个是说明，可随便填
+def gitUrl = 'https://github.com/conanchen/ditto-app-android-grpcapi'      // Git仓库的url  这个是说明，可随便填
+group = "io.github.conanchen"    // 这里是groupId ,必须填写  一般填你唯一的包名
 
 install {
     repositories.mavenInstaller {
@@ -104,22 +107,6 @@ install {
         }
     }
 }
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-bintray {
-    user = properties.getProperty("bintray.user")    //读取 local.properties 文件里面的 bintray.user
-    key = properties.getProperty("bintray.apikey")   //读取 local.properties 文件里面的 bintray.apikey
-    configurations = ['archives']
-    pkg {
-        userOrg = "kkchen"
-        repo = "ditto-grpcapi-android"
-        name = "grpc-api-andorid"    //发布到JCenter上的项目名字，必须填写
-        websiteUrl = siteUrl
-        vcsUrl = gitUrl
-        licenses = ["Apache-2.0"]
-        publish = true
-    }
-}
 tasks.withType(JavaCompile){
     options.encoding = "UTF-8"
 }
@@ -142,3 +129,19 @@ artifacts {
     archives sourcesJar
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")    //读取 local.properties 文件里面的 bintray.user
+    key = properties.getProperty("bintray.apikey")   //读取 local.properties 文件里面的 bintray.apikey
+    configurations = ['archives']
+    pkg {
+        userOrg = "kkchen"
+        repo = "ditto-grpcapi-android"
+        name = "grpc-api-andorid"    //发布到JCenter上的项目名字，必须填写
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
