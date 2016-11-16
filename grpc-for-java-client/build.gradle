@@ -23,7 +23,7 @@ bintray {
     pkg {
         userOrg = "kkchen"
         repo = "ditto-grpcapi-android"
-        name = "grpc-api-andorid"    //发布到JCenter上的项目名字，必须填写
+        name = "grpc-api-java"    //发布到JCenter上的项目名字，必须填写
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         issueTrackerUrl = issueUrl
@@ -37,7 +37,7 @@ install {
         // This generates POM.xml with proper parameters
         pom {
             project {
-                packaging 'aar'
+                packaging 'jar'
 
                 // Add your description here
                 name = 'A simple Java implmentation of The Blue Allinace APIv2'
@@ -104,6 +104,12 @@ artifacts {
     archives javadocJar
     archives sourcesJar
 }
+apply plugin: 'cobertura'
+apply plugin: 'com.github.kt3k.coveralls'
 
+cobertura{
+    coverageFormats = ['html', 'xml']
+    coverageIgnoreTrivial = true
+}
 
 
